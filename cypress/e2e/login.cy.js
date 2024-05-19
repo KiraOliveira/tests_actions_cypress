@@ -31,4 +31,21 @@ describe('Login', () => {
       cy.login('qa', 'xperience')
       loginPages.loginSucess();
   })
+
+  it('Wrong scenario', () => {
+      cy.login('qa', 'teste')
+      const modalContent =  '.swal2-html-container'
+
+    cy.get(modalContent).should('have.text', 'Oops! Senha incorreta :(')
+  })
+
+  it('Wrong message scenario', () => {
+    cy.login('qa', 'xperience')
+    const modalContent =  '.swal2-html-container'
+
+    cy.get(modalContent).should('have.text', 'Suas credenciais estão corretas :)')
+
+  })
+
+  
 })
