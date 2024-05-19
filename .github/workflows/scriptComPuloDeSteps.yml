@@ -1,0 +1,100 @@
+name: Cypress Cloud Actions com Fail-fast não recomendado
+## Atualizado com stetp de fail-fast para rodar em todos os browsers mesmo com falha em algum (fail-fast aborta)
+
+on:
+  workflow_dispatch: 
+    inputs: 
+      spec:
+        description: Run by cypress command line
+        default: cypress/e2e/*
+
+jobs:
+  cypress-e2e-electron:
+    runs-on: ubuntu-latest
+    container:
+      image: cypress/browsers:node-20.9.0-chrome-118.0.5993.88-1-ff-118.0.2-edge-118.0.2088.46-1
+      options: --user 1001
+    strategy:
+      fail-fast: false
+    steps: 
+      - name: Get code
+        uses: actions/checkout@v4.1.5
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v6.5.0
+        with:
+          install-command: yarn install
+          browser: electron
+          record: true
+          group: UI Electron
+          spec: ${{ github.event.inputs.spec }}
+        env:
+          CYPRESS_RECORD_KEY: 84ccc7de-19ee-44cb-a871-d7e7dac16ce0
+          GITHUB_TOKEN: ${{ secrets.GITHUB.TOKEN }}
+  cypress-e2e-chrome:
+    needs: cypress-e2e-electron
+    runs-on: ubuntu-latest
+    container:
+      image: cypress/browsers:node-20.9.0-chrome-118.0.5993.88-1-ff-118.0.2-edge-118.0.2088.46-1
+      options: --user 1001
+    strategy:
+      fail-fast: false  
+    steps: 
+      - name: Get code
+        uses: actions/checkout@v4.1.5
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v6.5.0
+        with:
+          install-command: yarn install
+          browser: chrome
+          record: true
+          group: UI Chrome
+          spec: ${{ github.event.inputs.spec }}
+        env:
+          CYPRESS_RECORD_KEY: 84ccc7de-19ee-44cb-a871-d7e7dac16ce0
+          GITHUB_TOKEN: ${{ secrets.GITHUB.TOKEN }}
+  cypress-e2e-firefox:
+    needs: cypress-e2e-chrome
+    runs-on: ubuntu-latest
+    container:
+      image: cypress/browsers:node-20.9.0-chrome-118.0.5993.88-1-ff-118.0.2-edge-118.0.2088.46-1
+      options: --user 1001
+    strategy:
+      fail-fast: false  
+    steps: 
+      - name: Get code
+        uses: actions/checkout@v4.1.5
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v6.5.0
+        with:
+          install-command: yarn install
+          browser: firefox
+          record: true
+          group: UI Firefox
+          spec: ${{ github.event.inputs.spec }}
+        env:
+          CYPRESS_RECORD_KEY: 84ccc7de-19ee-44cb-a871-d7e7dac16ce0
+          GITHUB_TOKEN: ${{ secrets.GITHUB.TOKEN }}
+  cypress-e2e-edge:
+    needs: cypress-e2e-firefox
+    runs-on: ubuntu-latest
+    container:
+      image: cypress/browsers:node-20.9.0-chrome-118.0.5993.88-1-ff-118.0.2-edge-118.0.2088.46-1
+      options: --user 1001
+    steps: 
+      - name: Get code
+        uses: actions/checkout@v4.1.5
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v6.5.0
+        with:
+          install-command: yarn install
+          browser: edge
+          record: true
+          group: UI Edge
+          spec: ${{ github.event.inputs.spec }}
+        env:
+          CYPRESS_RECORD_KEY: 84ccc7de-19ee-44cb-a871-d7e7dac16ce0
+          GITHUB_TOKEN: ${{ secrets.GITHUB.TOKEN }}        
