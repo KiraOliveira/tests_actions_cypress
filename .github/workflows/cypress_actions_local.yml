@@ -3,12 +3,12 @@ name: Cypress Actions Local
 on:
   workflow_dispatch: 
     inputs: 
-      cli:
+      spec:
         description: Run by cypress command line
-        default: yarn cypress run
+        default: cypress/e2e/*
 
-jobs: 
-  cypress-electron-tests:
+jobs:
+  cypress-e2e-electron:
     runs-on: ubuntu-latest
     container:
       image: cypress/browsers:node-20.9.0-chrome-118.0.5993.88-1-ff-118.0.2-edge-118.0.2088.46-1
@@ -16,9 +16,9 @@ jobs:
     steps: 
       - name: Get code
         uses: actions/checkout@v4.1.5
-
-      - name: Install dependencies
-        run: yarn install
-
-      - name: Run E2E tests
-        run: ${{ github.event.inputs.cli }}
+        with:
+          install-command: yarn install
+          browser: electron
+          record: true
+          group: UI Electron
+          spec: ${{ github.event.inputs.spec }}
