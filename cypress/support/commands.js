@@ -32,7 +32,7 @@ Cypress.Commands.add('login', (user, pass) => {
 
     cy.get(elementsLogin.fieldUser).should('exist').and('be.visible').and('have.text', '').as('username')
     cy.get(elementsLogin.fieldPassword).should('exist').and('be.visible').and('have.text', '').as('password')
-
+    
     user 
         ? cy.get('@username').clear().type(user)
         : cy.log('username is null')

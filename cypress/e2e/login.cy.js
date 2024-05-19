@@ -1,12 +1,11 @@
 import loginPages from "../support/pages/loginPages"
 
 describe('Login', () => {
-  
 
   it('Screen Elements', () => {
     cy.login()
     loginPages.screenElements();
-  })  
+  })
 
   it('Required User', ()=> {
       cy.login(null, 'teste')
